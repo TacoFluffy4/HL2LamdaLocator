@@ -1,2 +1,7 @@
 # HL2LamdaLocator
-A webpage to help you determine which Lamda Caches you are missing in HL2
+
+# How to use
+
+- Select your file
+
+- Click the load button
