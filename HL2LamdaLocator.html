@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Find missing Lamda Caches in HL2</title>
+<script>
+	function parse(){
+		//load file
+		const [file] = document.querySelector("#file").files;
+		const reader = new FileReader();
+		reader.readAsText(file);
+		
+		//once file is loaded
+		reader.addEventListener("load", () => {
+			//read the data
+			let text = reader.result;
+			
+			//parse for caches
+			const regex = /"data"\t\t"(?<hex>0x.+)"/;
+			const found = text.match(regex).groups.hex;
+			let num = Number(found);
+			
+			//figure out which cache each bit represents 
+			//credit: https://steamcommunity.com/app/220/discussions/0/613937306750736797/
+			let foundCaches = "Found: ";
+			let missedCaches = "Missed: ";
+			for(let i=0; i<45; i++){//for every cache
+				let mask = 1 << i; //get mask
+				let cacheNumber = i+1;
+				if(mask & num){ //if bit at mask is 1
+					foundCaches += cacheNumber + ", ";
+				}else{
+					missedCaches += cacheNumber + ", ";
+				}
+			}
+			
+			//display
+			output.innerHTML = missedCaches + "<br/>" + foundCaches + 
+			"<br/>https://steamcommunity.com/sharedfiles/filedetails/?id=416098764 to help find the caches";
+		}, false);
+	}
+</script>
+</head>
+<body>
+Upload gamestate.txt<br/>
+By default this file is at C:\Program Files (x86)\Steam\steamapps\common\Half-Life 2\hl2<br/>
+<input type="file" id="file" accept=".txt"><br/>
+<input type="button" value="Load" onclick="parse();">
+<div id="output"></div>
+</body>
+</html>
